@@ -7,10 +7,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import smartbudget.dto.TransactionDto;
 import smartbudget.enitity.Transaction;
+import smartbudget.enitity.User;
 
 @Generated(
     value = "org.mapstruct.ap.MappingProcessor",
-    date = "2026-05-09T11:27:54+0200",
+    date = "2026-07-23T13:42:15+0200",
     comments = "version: 1.5.5.Final, compiler: javac, environment: Java 21.0.10 (Microsoft)"
 )
 @Component
@@ -28,6 +29,8 @@ public class TransactionMapperImpl implements TransactionMapper {
         TransactionDto transactionDto = new TransactionDto();
 
         transactionDto.setCategoryDto( categoryMapper.toDto( transaction.getCategory() ) );
+        transactionDto.setUserId( transactionUserId( transaction ) );
+        transactionDto.setId( transaction.getId() );
         transactionDto.setAmount( transaction.getAmount() );
         transactionDto.setType( transaction.getType() );
         transactionDto.setDate( transaction.getDate() );
@@ -49,5 +52,20 @@ public class TransactionMapperImpl implements TransactionMapper {
         }
 
         return list;
+    }
+
+    private Long transactionUserId(Transaction transaction) {
+        if ( transaction == null ) {
+            return null;
+        }
+        User user = transaction.getUser();
+        if ( user == null ) {
+            return null;
+        }
+        Long id = user.getId();
+        if ( id == null ) {
+            return null;
+        }
+        return id;
     }
 }

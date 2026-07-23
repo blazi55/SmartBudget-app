@@ -27,7 +27,10 @@ export const Dashboard: FC = () => {
     petExpenses,
     setFilter,
     loading,
-    spendingBreakdown,
+    income,
+    incomeGoal,
+    netChange,
+    reload,
   } = useDashboard(1);
 
   if (loading) {
@@ -37,27 +40,23 @@ export const Dashboard: FC = () => {
   return (
     <DashboardLayout>
       <div className="grid">
-
-        {/* ROW 1 */}
         <div className="balance">
           <BalanceCard amount={balance} />
         </div>
 
         <div className="networth">
-          <NetWorthCard amount={balance} change={453} />
+          <NetWorthCard amount={balance} change={netChange} />
         </div>
 
         <div className="actions">
-          <QuickActions />
+          <QuickActions onCreated={reload} />
         </div>
 
-        {/* ROW 2 */}
         <div className="spending">
           <div className="card">
             <div className="card-header">
               <p className="card-title">Spending</p>
             </div>
-
             <div className="card-body chart">
               <SpendingChart data={spending} />
             </div>
@@ -65,14 +64,13 @@ export const Dashboard: FC = () => {
         </div>
 
         <div className="goal">
-          <IncomeGoal current={balance} goal={40000} />
+          <IncomeGoal current={income} goal={Number(incomeGoal)} />
         </div>
 
         <div className="notifications">
           <Notifications data={notifications} />
         </div>
 
-        {/* ROW 3 */}
         <div className="breakdown">
           <SpendingBreakdown data={transactions} />
         </div>
@@ -81,23 +79,19 @@ export const Dashboard: FC = () => {
           <PetExpenses data={petExpenses} />
         </div>
 
-        {/* ROW 4 */}
         <div className="assets">
           <AssetsChart data={assets} />
         </div>
 
         <div className="transactions">
           <div className="card">
-
             <div className="card-header">
               <h2 className="section-title">Transactions</h2>
-
               <select
                 className="select"
                 onChange={(e) => setFilter(e.target.value)}
               >
                 <option value="ALL">All Categories</option>
-
                 {categories.map((c) => (
                   <option key={c.id} value={c.name}>
                     {c.name}
@@ -105,14 +99,11 @@ export const Dashboard: FC = () => {
                 ))}
               </select>
             </div>
-
             <div className="card-body">
               <TransactionsList data={transactions} />
             </div>
-
           </div>
         </div>
-
       </div>
     </DashboardLayout>
   );

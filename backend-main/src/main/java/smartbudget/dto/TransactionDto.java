@@ -9,6 +9,8 @@ import java.time.LocalDate;
 
 @Data
 public class TransactionDto {
+	private Long id;
+	private Long userId;
 	private BigDecimal amount;
 	private TransactionType type;
 	private LocalDate date;

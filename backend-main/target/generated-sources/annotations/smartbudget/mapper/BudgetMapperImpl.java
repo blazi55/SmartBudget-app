@@ -7,7 +7,7 @@ import smartbudget.enitity.Budget;
 
 @Generated(
     value = "org.mapstruct.ap.MappingProcessor",
-    date = "2026-05-09T11:27:53+0200",
+    date = "2026-07-23T13:42:15+0200",
     comments = "version: 1.5.5.Final, compiler: javac, environment: Java 21.0.10 (Microsoft)"
 )
 @Component

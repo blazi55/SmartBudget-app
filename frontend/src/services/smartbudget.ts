@@ -3,12 +3,18 @@ import type { BudgetDto } from "./types/BudgetDto";
 import type { CategoryDto } from "./types/CategoryDto";
 import type { TransactionDto } from "./types/TransactionDto";
 
-/* ===== USERS ===== */
+export type CreateTransactionPayload = {
+  userId: number;
+  categoryId: number;
+  amount: number;
+  type: "INCOME" | "EXPENSE";
+  date: string;
+  currency: string;
+  description: string;
+};
 
 export const getUsers = () => api.get("/users");
 export const getUser = (id: number) => api.get(`/users/${id}`);
-
-/* ===== CATEGORIES ===== */
 
 export const getTransactions = (params?: {
   userId?: number;
@@ -17,11 +23,18 @@ export const getTransactions = (params?: {
   const query = new URLSearchParams();
 
   if (params?.userId) query.append("userId", String(params.userId));
-  if (params?.categoryId)
-    query.append("categoryId", String(params.categoryId));
+  if (params?.categoryId) query.append("categoryId", String(params.categoryId));
 
   return api.get(`/transactions?${query.toString()}`) as Promise<TransactionDto[]>;
 };
+
+export const createTransaction = (payload: CreateTransactionPayload) =>
+  api.post("/transactions", payload) as Promise<TransactionDto>;
+
+export const deleteTransaction = (id: number) => api.delete(`/transactions/${id}`);
+
+export const republishTransactionEvents = () =>
+  api.post("/transactions/republish-events", {}) as Promise<{ republished: number }>;
 
 export const getCategories = () =>
   api.get("/categories") as Promise<CategoryDto[]>;

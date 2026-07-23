@@ -1,5 +1,5 @@
 export type BudgetDto = {
   limitAmount: number;
-  period: "DAILY" | "WEEKLY" | "MONTHLY" | "YEARLY";
+  period: "WEEK" | "MONTH" | "YEAR" | "MONTHLY" | "DAILY" | "WEEKLY" | "YEARLY";
   startDate: string;
 };

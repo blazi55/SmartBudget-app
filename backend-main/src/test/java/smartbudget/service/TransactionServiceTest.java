@@ -14,6 +14,7 @@ import smartbudget.enitity.User;
 import smartbudget.enums.Currency;
 import smartbudget.enums.TransactionType;
 import smartbudget.exception.NotFoundException;
+import smartbudget.kafka.TransactionEventPublisher;
 import smartbudget.mapper.TransactionMapper;
 import smartbudget.repository.CategoryRepository;
 import smartbudget.repository.TransactionRepository;
@@ -45,6 +46,9 @@ class TransactionServiceTest {
 
 	@Mock
 	private TransactionMapper transactionMapper;
+
+	@Mock
+	private TransactionEventPublisher transactionEventPublisher;
 
 	@InjectMocks
 	private TransactionService transactionService;
@@ -196,16 +200,17 @@ class TransactionServiceTest {
 
 	@Test
 	void shouldDeleteTransaction() {
-		when(transactionRepository.existsById(1L)).thenReturn(true);
+		when(transactionRepository.findById(1L)).thenReturn(Optional.of(transaction));
 
 		transactionService.delete(1L);
 
-		verify(transactionRepository).deleteById(1L);
+		verify(transactionRepository).delete(transaction);
+		verify(transactionEventPublisher).publishDeleted(transaction);
 	}
 
 	@Test
 	void shouldThrowWhenDeleteNotFound() {
-		when(transactionRepository.existsById(1L)).thenReturn(false);
+		when(transactionRepository.findById(1L)).thenReturn(Optional.empty());
 
 		assertThrows(NotFoundException.class,
 				() -> transactionService.delete(1L));

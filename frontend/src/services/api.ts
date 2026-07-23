@@ -1,40 +1,44 @@
-const API_URL = "http://localhost:8080/api";
+const BUDGET_API_URL = "http://localhost:8080/api";
+const REPORT_API_URL = "http://localhost:8081/api";
+
+async function request(baseUrl: string, url: string, options?: RequestInit) {
+  const res = await fetch(`${baseUrl}${url}`, options);
+
+  if (!res.ok) {
+    const text = await res.text();
+    console.error("API ERROR:", { url: `${baseUrl}${url}`, status: res.status, body: text });
+    throw new Error(`${options?.method || "GET"} ${url} failed (${res.status})`);
+  }
+
+  if (res.status === 204) {
+    return null;
+  }
+
+  return res.json();
+}
 
 export const api = {
-  get: async (url: string) => {
-    const res = await fetch(`${API_URL}${url}`);
+  get: (url: string) => request(BUDGET_API_URL, url),
 
-    if (!res.ok) {
-      const text = await res.text();
-
-      console.error("API ERROR:", {
-        url,
-        status: res.status,
-        body: text,
-      });
-
-      throw new Error(`GET ${url} failed (${res.status})`);
-    }
-
-    return res.json();
-  },
-
-  post: async (url: string, body: any) => {
-    const res = await fetch(`${API_URL}${url}`, {
+  post: (url: string, body: unknown) =>
+    request(BUDGET_API_URL, url, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(body),
-    });
+    }),
 
-    if (!res.ok) throw new Error("POST error");
-    return res.json();
-  },
+  put: (url: string, body: unknown) =>
+    request(BUDGET_API_URL, url, {
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(body),
+    }),
 
   delete: async (url: string) => {
-    const res = await fetch(`${API_URL}${url}`, {
-      method: "DELETE",
-    });
-
-    if (!res.ok) throw new Error("DELETE error");
+    await request(BUDGET_API_URL, url, { method: "DELETE" });
   },
+};
+
+export const reportApi = {
+  get: (url: string) => request(REPORT_API_URL, url),
 };

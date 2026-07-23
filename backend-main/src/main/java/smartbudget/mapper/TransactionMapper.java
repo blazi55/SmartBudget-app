@@ -11,6 +11,7 @@ import java.util.List;
 public interface TransactionMapper {
 
 	@Mapping(target = "categoryDto", source = "category")
+	@Mapping(target = "userId", source = "user.id")
 	TransactionDto toDto(Transaction transaction);
 
 	List<TransactionDto> toDtoList(List<Transaction> transactions);

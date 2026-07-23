@@ -2,6 +2,8 @@ package smartbudget.service;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import smartbudget.dto.UserDto;
 import smartbudget.dto.createDto.CreateUserDto;
@@ -20,11 +22,12 @@ public class UserService {
 
 	private final UserRepository userRepository;
 	private final UserMapper userMapper;
+	private final PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
 
 	public UserDto create(final CreateUserDto dto) {
 		final User user = User.builder()
 				.email(dto.getEmail())
-				.passwordHash(hashPassword(dto.getPassword()))
+				.passwordHash(passwordEncoder.encode(dto.getPassword()))
 				.createdAt(LocalDateTime.now())
 				.build();
 
@@ -49,10 +52,5 @@ public class UserService {
 			throw new NotFoundException("User not found");
 		}
 		userRepository.deleteById(id);
-	}
-
-	private String hashPassword(final String password) {
-		// TODO: BCrypt
-		return password;
 	}
 }
